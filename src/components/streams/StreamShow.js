@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import flv from 'flv.js';
 import { connect } from 'react-redux';
 import { fetchStream } from './../../actions/index';
 
 const StreamShow = ({ fetchStream, match, stream}) => {
+  const videoRef = useRef();
+
   useEffect(() => {
     fetchStream(match.params.id);
   }, []);
@@ -13,6 +16,7 @@ const StreamShow = ({ fetchStream, match, stream}) => {
 
   return (
     <div>
+      <video ref={videoRef} style={{ width: '100%' }} controls />
       <h1>{stream?.title}</h1>
       <h3>{stream?.description}</h3>
     </div>
