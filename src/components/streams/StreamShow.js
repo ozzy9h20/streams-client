@@ -8,17 +8,36 @@ const StreamShow = ({ fetchStream, match, stream}) => {
 
   useEffect(() => {
     fetchStream(match.params.id);
+
+    return () => {
+      player?.destroy();
+    }
   }, []);
 
-  if (!stream) {
-    return <div>Loading...</div>
+  useEffect(() => {
+    buildPlayer();
+  });
+
+  let player = null;
+  const buildPlayer = () => {
+    if (player || !stream) {
+      return;
+    }
+    
+    player = flv.createPlayer({
+      type: 'flv',
+      url: `http://localhost:8000/live/${match.params.id}.flv`
+    });
+
+    player.attachMediaElement(videoRef.current);
+    player.load();
   }
 
   return (
     <div>
       <video ref={videoRef} style={{ width: '100%' }} controls />
-      <h1>{stream?.title}</h1>
-      <h3>{stream?.description}</h3>
+      <h1>{stream ? stream?.title : 'Loading...'}</h1>
+      <h3>{stream ? stream?.description : 'Description'}</h3>
     </div>
    );
 }
